@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+from objects import *
+import numpy as np
 
 from objects import *
 import numpy as np
