@@ -8,46 +8,53 @@ def probs():
    return y
 
 
+infectionchance = 100
 infectiontime = 10
-Numpeople = 1000
+Numpeople = 100
 startinfectors = np.random.randint(1, Numpeople, 5)
-SimNum = 160
-people = []
-infected = []
-recovered = []
+SimNum = 3000
 
-for n in range(Numpeople):
-    people.append(Individual(probs(), 0))
-for j in startinfectors:
-    people[j].status = 1
+people = []
+Totalinfected = []
+CurrentInfected = []
+immune = []
+for index in range(Numpeople):
+    if index in startinfectors:
+        people.append(Individual(probs(), 1))
+    else:
+        people.append(Individual(probs(), 0))
 count = 0
 count2 = 0
+count3 = 0
 for t in range(SimNum):
     for x in people:
+        if x.status == 3:
+            count3 = count3 + 1
         if x.status == 1:
             count = count + 1
-    infected.append(count)
+    Totalinfected.append(count)
+    immune.append(count3)
+    if count < 1:
+        SimNum = t + 1
+        break
     if t > infectiontime:
-        recoveredi = infected[-1] - infected[count2]
-        recovered.append(recoveredi)
+        current = Totalinfected[-1] - Totalinfected[count2]
+        CurrentInfected.append(current)
+        RanRecovered = np.random.randint(1, Numpeople, Totalinfected[count2])
+        for z in RanRecovered:
+            people[z].status = 3
         count2 = count2 + 1
-
     for i in people:
         if i.status == 1:
             Numf = np.random.randint(1, Numpeople, i.friends)
             for o in Numf:
-                if i.contagiousness > (np.random.randint(1, 1000, 1)):
-                    people[o].status = 1
+                if people[0].status != 3 or people[0].status != 1:
+                    if i.contagiousness > (np.random.randint(1, infectionchance, 1)):
+                        print(people[o].status)
+                        people[o].status = 1
     count = 0
-t = np.linspace(0, SimNum, SimNum)
+    count3 = 0
 
-differenceLen = len(infected) - len(recovered)
-pad = infected[0:(infectiontime+1)]
-recovered = pad + recovered
-plt.plot(t, recovered)
-plt.plot(t, infected)
-recovered = np.array(infected) - np.array(recovered)
-
-
-
+time = np.linspace(0, SimNum, SimNum)
+plt.plot(time, Totalinfected)
 plt.show()
