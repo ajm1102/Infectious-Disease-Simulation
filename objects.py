@@ -8,7 +8,7 @@ class Individual:
         self.status = status
         self.time = 0
         self.removed = 0
-        self.friends = np.random.randint(0, 6, 1)
+        self.friends = np.random.randint(0, 5, 1)
 
 
 
