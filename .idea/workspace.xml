@@ -3,17 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="66c8109e-aafc-4444-b7d4-42c523032984" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/../Django Corey Schafer/BlogCorey/blog/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Dots/Dots_Objects.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Dots/Dots_run.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Django Corey Schafer/BlogCorey/Web/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Django Corey Schafer/BlogCorey/Web/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/pythonProject2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/pythonProject2.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/objects.py" beforeDir="false" afterPath="$PROJECT_DIR$/Chance Meeting/objects.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/old/run.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/Chance Meeting/run.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
