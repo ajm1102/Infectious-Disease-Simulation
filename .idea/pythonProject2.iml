@@ -4,5 +4,7 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="Django Corey Schafer" />
+    <orderEntry type="module" module-name="BlogCorey" />
   </component>
 </module>

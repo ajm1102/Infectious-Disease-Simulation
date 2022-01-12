@@ -8,16 +8,17 @@ def probs():
    return y
 
 
-infectionchance = 100
-infectiontime = 10
-Numpeople = 100
-startinfectors = np.random.randint(1, Numpeople, 5)
-SimNum = 3000
+initialinfected = 1
+infectionchance = 280
+infectiontime = 8
+Numpeople = 500
+SimNum = 200
+immuneWear = 1
 
 people = []
 Totalinfected = []
-CurrentInfected = []
 immune = []
+startinfectors = np.random.randint(1, Numpeople, initialinfected)
 for index in range(Numpeople):
     if index in startinfectors:
         people.append(Individual(probs(), 1))
@@ -30,6 +31,9 @@ for t in range(SimNum):
     for x in people:
         if x.status == 3:
             count3 = count3 + 1
+            if np.random.randint(0, 1000, 1) < immuneWear:
+                print("Spnt")
+                x.status = 1
         if x.status == 1:
             count = count + 1
     Totalinfected.append(count)
@@ -38,8 +42,6 @@ for t in range(SimNum):
         SimNum = t + 1
         break
     if t > infectiontime:
-        current = Totalinfected[-1] - Totalinfected[count2]
-        CurrentInfected.append(current)
         RanRecovered = np.random.randint(1, Numpeople, Totalinfected[count2])
         for z in RanRecovered:
             people[z].status = 3
@@ -48,13 +50,16 @@ for t in range(SimNum):
         if i.status == 1:
             Numf = np.random.randint(1, Numpeople, i.friends)
             for o in Numf:
-                if people[0].status != 3 or people[0].status != 1:
+                if people[o].status != 3 and people[o].status != 1:
                     if i.contagiousness > (np.random.randint(1, infectionchance, 1)):
-                        print(people[o].status)
                         people[o].status = 1
     count = 0
     count3 = 0
+print(sum(Totalinfected))
+print(sum(immune))
 
 time = np.linspace(0, SimNum, SimNum)
+plt.plot(time, immune)
 plt.plot(time, Totalinfected)
+
 plt.show()
