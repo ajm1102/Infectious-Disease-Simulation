@@ -1,6 +1,7 @@
 class Dot:
     def __init__(self):
         self.info = [0, 0, 0, 0]
+        self.status = "Susceptible"
         self.infectionArea = []
         self.infectionChance = []
 

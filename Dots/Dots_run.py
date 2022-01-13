@@ -21,6 +21,7 @@ def CheckBoundaryLimits(x, y):
 
 people = []
 num_people = 25
+i_infected = 1
 simlength = 7000
 Boundary.x = 50
 Boundary.y = 100
@@ -32,7 +33,6 @@ for j in range(num_people):
     person.y = np.random.randint((-1 * Boundary.x), Boundary.y, 1)
     # Initial x and y velocity
     person.vx, person.vy = np.random.uniform(-2, 2, 1), np.random.uniform(-2, 2, 1)
-
     for i in range(simlength):
         new_x = person.x[-1] + person.vx
         new_y = person.y[-1] + person.vy
@@ -45,15 +45,12 @@ for j in range(num_people):
 reddots = []
 x_data = []
 y_data = []
-
 fig, ax = plt.subplots()
 ax.set_xlim(-Boundary.x, Boundary.x)
 ax.set_ylim(-Boundary.y, Boundary.y)
 for k in range(num_people):
     redDot, = ax.plot(people[k].x[0], people[k].y[0], "bo", markersize=20)
     reddots.append(redDot)
-
-
 def animation_frame(frame):
     for d in range(num_people):
         reddots[d].set_xdata(people[d].x[frame])
@@ -62,6 +59,4 @@ def animation_frame(frame):
 
 
 animation = FuncAnimation(fig, func=animation_frame, frames=np.arange(0, simlength, 1), interval=10)
-
-
 plt.show()
