@@ -29,7 +29,7 @@ def InfectionArea():
 infection_diameter = 3
 people = []
 num_people = 100
-simlength = 6000
+simlength = 1000
 Boundary.x = 100
 Boundary.y = 100
 

@@ -39,8 +39,9 @@ def animation_frame(frame, reddots):
     for d in range(num_people):
         reddots[d].set_xdata(people[d].x[frame])
         reddots[d].set_ydata(people[d].y[frame])
-        if frame in record and record.get(frame) == people[d]:
-            reddots[d].set_color((0.1, 0.1, 0.1))
+        if d != 0:
+            if frame == record[people[d]]:
+                reddots[d].set_color((0.1, 0.1, 0.1))
     return reddots
 
 
@@ -59,11 +60,12 @@ for i in range(simlength):
                 if in_area:
                     if p_susceptible.infectionChance >= np.random.randint(0, 100, 1):
                         p_susceptible.status = "Infected"
-                        record.update({i: p_susceptible})
+                        record.update({p_susceptible: i})
     for it in people:
         if it.status == "Infected":
             count = count + 1
     num_Infected.append(count)
     count = 0
-
-print(num_Infected)
+t = np.linspace(0, simlength, simlength)
+plt.plot(t, num_Infected)
+plt.show()
