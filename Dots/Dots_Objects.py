@@ -6,7 +6,7 @@ class Dot:
         self.infectionAreaTR = []
         self.infectionAreaBL = []
         self.infectionAreaBR = []
-        self.infectionChance = []
+        self.infectionChance = 100
 
     @property
     def x(self):

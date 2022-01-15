@@ -3,45 +3,67 @@ from matplotlib.animation import FuncAnimation
 import numpy as np
 import matplotlib.pyplot as plt
 
-np.set_printoptions(threshold=np.inf)
-print(people[0].infectionAreaTR[1])
 
-reddots = []
-x_data = []
-y_data = []
-fig2, ax2 = plt.subplots()
-ax2.set_xlim(-Boundary.x, Boundary.x)
-ax2.set_ylim(-Boundary.y, Boundary.y)
-count = 4
-for k in range(num_people):
-    redDotTR, = ax2.plot(people[k].infectionAreaTR[0][0], people[k].infectionAreaTR[0][1], "bo",
-                         markersize=5)
-    redDotTL, = ax2.plot(people[k].infectionAreaTL[0][0], people[k].infectionAreaTL[0][1], "bo",
-                         markersize=5)
-    redDotBR, = ax2.plot(people[k].infectionAreaBR[0][0], people[k].infectionAreaBR[0][1], "bo",
-                         markersize=5)
-    redDotBL, = ax2.plot(people[k].infectionAreaBL[0][0], people[k].infectionAreaBL[0][1], "bo",
-                         markersize=5)
-    reddots.append(redDotTR)
-    reddots.append(redDotTL)
-    reddots.append(redDotBR)
-    reddots.append(redDotBL)
+def solve(bl, tr, p):
+    if bl[0] < p[0] < tr[0] and bl[1] < p[1] < tr[1]:
+        return True
+    else:
+        return False
 
-def animation_frame(frame, s):
+
+def initial_infected():
+    i_infected = 1
+    count2 = 0
+    while count2 < i_infected:
+        people[count2].status = "Infected"
+        count2 = count2 + 1
+    return
+
+
+def animatedots():
+    reddots = []
+    fig, ax = plt.subplots()
+    ax.set_xlim(-Boundary.x, Boundary.x)
+    ax.set_ylim(-Boundary.y, Boundary.y)
+    for k in range(num_people):
+        redDot, = ax.plot(people[k].x[0], people[k].y[0], "bo", markersize=5)
+        reddots.append(redDot)
+    animation = FuncAnimation(fig, func=animation_frame, frames=np.arange(0, simlength, 1), interval=10, fargs=(
+        reddots,))
+    plt.show()
+    return
+
+
+def animation_frame(frame, reddots):
+    reddots[0].set_color((0.1, 0.1, 0.1))
     for d in range(num_people):
-        reddots[(0+s)].set_xdata(people[d].infectionAreaTR[frame][0])
-        reddots[(0+s)].set_ydata(people[d].infectionAreaTR[frame][1])
-        reddots[1+s].set_xdata(people[d].infectionAreaTL[frame][0])
-        reddots[1+s].set_ydata(people[d].infectionAreaTL[frame][1])
-        reddots[2+s].set_xdata(people[d].infectionAreaBR[frame][0])
-        reddots[2+s].set_ydata(people[d].infectionAreaBR[frame][1])
-        reddots[3+s].set_xdata(people[d].infectionAreaBL[frame][0])
-        reddots[3+s].set_ydata(people[d].infectionAreaBL[frame][1])
-        s = s + 4
+        reddots[d].set_xdata(people[d].x[frame])
+        reddots[d].set_ydata(people[d].y[frame])
+        if frame in record and record.get(frame) == people[d]:
+            reddots[d].set_color((0.1, 0.1, 0.1))
     return reddots
 
 
-s = 0
-animation = FuncAnimation(fig2, func=animation_frame, frames=np.arange(0, simlength, 1), interval=10, fargs=(s,))
+initial_infected()
+num_Infected = []
+record = {}
+count = 0
 
-plt.show()
+for i in range(simlength):
+    for person in people:
+        if person.status == "Infected":
+            Susceptible = [person for person in people if "Susceptible" in person.status]
+            for p_susceptible in Susceptible:
+                in_area = solve(p_susceptible.infectionAreaBL[i], p_susceptible.infectionAreaTR[i],
+                                [person.x[i], person.y[i]])
+                if in_area:
+                    if p_susceptible.infectionChance >= np.random.randint(0, 100, 1):
+                        p_susceptible.status = "Infected"
+                        record.update({i: p_susceptible})
+    for it in people:
+        if it.status == "Infected":
+            count = count + 1
+    num_Infected.append(count)
+    count = 0
+
+print(num_Infected)

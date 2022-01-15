@@ -1,9 +1,5 @@
-from matplotlib.animation import FuncAnimation
 import numpy as np
-import matplotlib.pyplot as plt
 from Dots_Objects import *
-
-
 def CheckBoundaryLimits(x, y):
     if x > Boundary.x:
         x = Boundary.x
@@ -18,8 +14,6 @@ def CheckBoundaryLimits(x, y):
         y = -Boundary.y
         person.vy = person.vy * -1
     return x, y
-
-
 def InfectionArea():
     AreaCoordTR = [new_x + infection_diameter, new_y + infection_diameter]
     AreaCoordTL = [new_x + infection_diameter, new_y - infection_diameter]
@@ -32,11 +26,10 @@ def InfectionArea():
     return
 
 
-infection_diameter = 8
+infection_diameter = 3
 people = []
-num_people = 10
-i_infected = 1
-simlength = 1000
+num_people = 100
+simlength = 6000
 Boundary.x = 100
 Boundary.y = 100
 
@@ -55,23 +48,3 @@ for j in range(num_people):
         person.x = np.append(person.x, new_x)
         person.y = np.append(person.y, new_y)
     people.append(person)
-
-"""reddots = []
-x_data = []
-y_data = []
-fig, ax = plt.subplots()
-ax.set_xlim(-Boundary.x, Boundary.x)
-ax.set_ylim(-Boundary.y, Boundary.y)
-for k in range(num_people):
-    redDot, = ax.plot(people[k].x[0], people[k].y[0], "bo", markersize=20)
-    reddots.append(redDot)
-
-
-def animation_frame1(frame):
-    for d in range(num_people):
-        reddots[d].set_xdata(people[d].x[frame])
-        reddots[d].set_ydata(people[d].y[frame])
-    return reddots"""
-
-"""animation = FuncAnimation(fig, func=animation_frame, frames=np.arange(0, simlength, 1), interval=10)
-"""
