@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from Dots_Objects import *
 
+
 def CheckBoundaryLimits(x, y):
     if x > Boundary.x:
         x = Boundary.x
@@ -19,11 +20,24 @@ def CheckBoundaryLimits(x, y):
     return x, y
 
 
+def InfectionArea():
+    AreaCoordTR = [new_x + infection_diameter, new_y + infection_diameter]
+    AreaCoordTL = [new_x + infection_diameter, new_y - infection_diameter]
+    AreaCoordBR = [new_x - infection_diameter, new_y + infection_diameter]
+    AreaCoordBL = [new_x - infection_diameter, new_y - infection_diameter]
+    person.infectionAreaTR.append(AreaCoordTR)
+    person.infectionAreaTL.append(AreaCoordTL)
+    person.infectionAreaBR.append(AreaCoordBR)
+    person.infectionAreaBL.append(AreaCoordBL)
+    return
+
+
+infection_diameter = 8
 people = []
-num_people = 25
+num_people = 10
 i_infected = 1
-simlength = 7000
-Boundary.x = 50
+simlength = 1000
+Boundary.x = 100
 Boundary.y = 100
 
 for j in range(num_people):
@@ -37,12 +51,12 @@ for j in range(num_people):
         new_x = person.x[-1] + person.vx
         new_y = person.y[-1] + person.vy
         new_x, new_y = CheckBoundaryLimits(new_x, new_y)
-
+        InfectionArea()
         person.x = np.append(person.x, new_x)
         person.y = np.append(person.y, new_y)
     people.append(person)
 
-reddots = []
+"""reddots = []
 x_data = []
 y_data = []
 fig, ax = plt.subplots()
@@ -51,12 +65,13 @@ ax.set_ylim(-Boundary.y, Boundary.y)
 for k in range(num_people):
     redDot, = ax.plot(people[k].x[0], people[k].y[0], "bo", markersize=20)
     reddots.append(redDot)
-def animation_frame(frame):
+
+
+def animation_frame1(frame):
     for d in range(num_people):
         reddots[d].set_xdata(people[d].x[frame])
         reddots[d].set_ydata(people[d].y[frame])
-    return reddots
+    return reddots"""
 
-
-animation = FuncAnimation(fig, func=animation_frame, frames=np.arange(0, simlength, 1), interval=10)
-plt.show()
+"""animation = FuncAnimation(fig, func=animation_frame, frames=np.arange(0, simlength, 1), interval=10)
+"""
