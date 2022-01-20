@@ -26,10 +26,19 @@ def InfectionArea():
     return
 
 
-infection_diameter = 3
+# Added virus class to allow the addition of variants
+# Chance to be infected will be combination of a persons susceptibility and virus effectiveness
+infection_diameter = 4
+virus_chance = 100  # does nothing only dot class chance works
+initialinfected = 1
+infection_duration = 60
+immune_wear = 5
+virus1 = virus(initialinfected, infection_diameter, [], [], [], [], virus_chance, infection_duration, immune_wear)
+
+
 people = []
 num_people = 100
-simlength = 1000
+simlength = 2000
 Boundary.x = 100
 Boundary.y = 100
 

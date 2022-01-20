@@ -2,11 +2,11 @@ class Dot:
     def __init__(self):
         self.info = [0, 0, 0, 0]
         self.status = "Susceptible"
+        self.infectionChance = 100
         self.infectionAreaTL = []
         self.infectionAreaTR = []
         self.infectionAreaBL = []
         self.infectionAreaBR = []
-        self.infectionChance = 100
 
     @property
     def x(self):
@@ -40,8 +40,14 @@ class Dot:
     def vy(self, vy):
         self.info[3] = vy
 
-
 class Boundary:
     def __init__(self, maxY, maxX):
         self.x = maxX
         self.y = maxY
+class virus:
+    def __init__(self, initialinfected, infection_diameter, Tl, TR, BL, BR, ICM, dura, immune):
+        self.initialinfected = initialinfected
+        self.infection_diameter = infection_diameter
+        self.infectionChanceMod = ICM
+        self.infectionduration = dura
+        self.immune_wear = immune
