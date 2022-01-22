@@ -45,9 +45,10 @@ class Boundary:
         self.x = maxX
         self.y = maxY
 class virus:
-    def __init__(self, initialinfected, infection_diameter, Tl, TR, BL, BR, ICM, dura, immune):
+    def __init__(self, initialinfected, infection_diameter, Tl, TR, BL, BR, ICM, dura, immune, deathchance):
         self.initialinfected = initialinfected
         self.infection_diameter = infection_diameter
         self.infectionChanceMod = ICM
         self.infectionduration = dura
         self.immune_wear = immune
+        self.deathchance = deathchance
