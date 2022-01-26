@@ -1,5 +1,6 @@
 import numpy as np
 from Dots_Objects import *
+import json
 import cProfile
 # Changes x and y coordinates and velocity direction if they outside a rectangle
 def CheckBoundaryLimits(x, y, person):
@@ -31,12 +32,12 @@ def InfectionArea(new_x, new_y, infection_diameter, person):
 def createvirus():
     # Added virus class to allow the addition of variants
     # Chance to be infected will be combination of a persons susceptibility and virus effectiveness
-    infection_diameter = 5
+    infection_diameter = 20
     virus_chance = 100  # does nothing only dot class chance works
     initialinfected = 1
-    infection_duration = 250
-    immune_wear = 30
-    deathchance = 10
+    infection_duration = 80
+    immune_wear = 22
+    deathchance = 0
     createdvirus = virus(initialinfected, infection_diameter, [], [], [], [], virus_chance, infection_duration,
                          immune_wear, deathchance)
     return createdvirus
@@ -45,7 +46,7 @@ def persontrajectories():
     virus1 = createvirus()
     people = []
     num_people = 100
-    simlength = 10000
+    simlength = 1000
     Boundary.x = 200
     Boundary.y = 200
     for j in range(num_people):
