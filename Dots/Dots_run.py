@@ -2,6 +2,8 @@ import numpy as np
 from Dots_Objects import *
 import json
 import cProfile
+
+
 # Changes x and y coordinates and velocity direction if they outside a rectangle
 def CheckBoundaryLimits(x, y, person):
     if x > Boundary.x:
@@ -17,6 +19,8 @@ def CheckBoundaryLimits(x, y, person):
         y = -Boundary.y
         person.vy = person.vy * -1
     return x, y
+
+
 # Calculate a rectangles coordinates around a point
 def InfectionArea(new_x, new_y, infection_diameter, person):
     AreaCoordTR = [new_x + infection_diameter, new_y + infection_diameter]
@@ -29,23 +33,28 @@ def InfectionArea(new_x, new_y, infection_diameter, person):
     person.infectionAreaBL.append(AreaCoordBL)
     return
 
+
 def createvirus():
+    with open("InitialConditions.json") as f:
+        data = json.load(f)
     # Added virus class to allow the addition of variants
     # Chance to be infected will be combination of a persons susceptibility and virus effectiveness
-    infection_diameter = 20
     virus_chance = 100  # does nothing only dot class chance works
-    initialinfected = 1
-    infection_duration = 80
-    immune_wear = 22
-    deathchance = 0
+
+    infection_diameter = data["infection_diameter"]
+    initialinfected = data["initialinfected"]
+    infection_duration = data["infection_duration"]
+    immune_wear = data["immune_wear"]
+    deathchance = data["deathchance"]
+    num_people = data["Number_people"]
     createdvirus = virus(initialinfected, infection_diameter, [], [], [], [], virus_chance, infection_duration,
                          immune_wear, deathchance)
-    return createdvirus
+    return createdvirus, num_people
+
 
 def persontrajectories():
-    virus1 = createvirus()
+    virus1, num_people = createvirus()
     people = []
-    num_people = 100
     simlength = 1000
     Boundary.x = 200
     Boundary.y = 200
@@ -66,8 +75,3 @@ def persontrajectories():
         people.append(person)
 
     return num_people, simlength, people, virus1, Boundary
-
-
-
-
-

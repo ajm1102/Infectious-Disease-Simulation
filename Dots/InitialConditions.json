@@ -1,0 +1,9 @@
+{
+  "Number_people": 50,
+  "infection_diameter": 20,
+  "initialinfected": 1,
+  "infection_duration": 80,
+  "immune_wear": 20,
+  "deathchance": 10,
+  "Simulation_attempts": 2
+}

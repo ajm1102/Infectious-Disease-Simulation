@@ -1,12 +1,16 @@
 import json
+import ffmpeg
 from matplotlib import colors
-from matplotlib.animation import FuncAnimation
+from matplotlib.animation import FuncAnimation, writers
+
 from matplotlib.lines import Line2D
-import matplotlib.pyplot as plt
 from Dots_run import persontrajectories
 
 import numpy as np
 from scipy.interpolate import make_interp_spline
+import matplotlib.pyplot as plt
+
+plt.rcParams['animation.ffmpeg_path'] = ''
 
 
 def checkinfectedneighbours(bl, tr, p):
@@ -51,6 +55,10 @@ def animatedots(Boundary, num_people, people, simlength, infected_record, new_su
     animation = FuncAnimation(fig, func=animation_frame, frames=np.arange(0, simlength, 1), interval=0.11, fargs=(
         graph_dots, num_people, people, infected_record, new_sus, dead))
     plt.show()
+    # need tp add file index here to save all gifs
+    # Writer = writers['pillow']
+    # Writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+    # animation.save("animation.gif", Writer)
     return
 
 
@@ -70,9 +78,9 @@ def animation_frame(frame, graph_dots, num_people, people, infected_record, new_
         # Function to update the colours of each
         change_colours_animation(frame, graph_dots, people, infected_record, new_sus, dead, d, result)
         if result and sum(color) < 2.94:
-            print(sum(color))
             color = np.array(color) + 0.005
             graph_dots[d].set_color(tuple(color))
+
     return graph_dots
 
 
@@ -111,14 +119,15 @@ def AddToDict(personobj, dict1, infof):
     return dict1
 
 
-def writejson(num_infected, num_dead, num_recovered, t, sim_length):
+def writejson(num_infected, num_dead, num_recovered, t, sim_length, run_num):
     t = t.tolist()
     temp = []
     for i in range(sim_length):
         json_infected = [{"Time": t[i], "Dead": num_dead[i], "Infected": num_infected[i],
                           "Recovered": num_recovered[i]}, ]
         temp.append(json_infected)
-    with open("file.json", "w") as f:
+    filename = f"file{run_num}.json"
+    with open(filename, "w") as f:
         # Write it to file
         json.dump(temp, f, indent=2)
     return
@@ -130,7 +139,7 @@ def InterpolateFunc(t, num_infected):
     return xnew, power_smooth
 
 
-def main():
+def main(run_num):
     # function in dots_run.py file calculates paths of dots/people
     num_people, simlength, people, virus1, Boundary = persontrajectories()
 
@@ -142,7 +151,7 @@ def main():
     count_infected, count_dead, count_recovered = 0, 0, 0
     for i in range(simlength):
         for person in people:
-            if virus1.deathchance >= np.random.randint(0, 1000, 1) and person.status == "Infected":
+            if virus1.deathchance > np.random.randint(0, 1000, 1) and person.status == "Infected":
                 person.status = "Dead"
                 dead = AddToDict(person, dead, i)
                 count_dead = count_dead + 1
@@ -172,9 +181,9 @@ def main():
         num_infected.append(count_infected)
         num_dead.append(count_dead)
         num_recovered.append(count_recovered)
-        count_infected = 0
-        count_recovered = 0
-        count_dead = 0
+
+        count_infected, count_recovered, count_dead = 0, 0, 0
+
     animatedots(Boundary, num_people, people, simlength, infected_record, new_sus, dead)
 
     # plots time against num of infected people
@@ -187,9 +196,16 @@ def main():
     plt.plot(t, num_dead)
     plt.show()
 
-    writejson(num_infected, num_dead, num_recovered, t, simlength)
+    writejson(num_infected, num_dead, num_recovered, t, simlength, run_num)
     return
 
 
+def run():
+    with open("InitialConditions.json") as f:
+        data = json.load(f)
+    return data["Simulation_attempts"]
+
+
 if __name__ == "__main__":
-    main()
+    for num in range(run()):
+        main(num)
