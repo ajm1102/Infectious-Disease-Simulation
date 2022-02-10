@@ -32,21 +32,23 @@ def InfectionArea(new_x, new_y, infection_diameter, person):
     person.infectionAreaBR.append(AreaCoordBR)
     person.infectionAreaBL.append(AreaCoordBL)
     return
-
+def InitialParameters():
+    with open("InitialConditions.json") as f:
+        initial_parameters = json.load(f)
+    return initial_parameters
 
 def createvirus():
-    with open("InitialConditions.json") as f:
-        data = json.load(f)
+    initial_parameters = InitialParameters()
     # Added virus class to allow the addition of variants
     # Chance to be infected will be combination of a persons susceptibility and virus effectiveness
     virus_chance = 100  # does nothing only dot class chance works
 
-    infection_diameter = data["infection_diameter"]
-    initialinfected = data["initialinfected"]
-    infection_duration = data["infection_duration"]
-    immune_wear = data["immune_wear"]
-    deathchance = data["deathchance"]
-    num_people = data["Number_people"]
+    infection_diameter = initial_parameters["infection_diameter"]
+    initialinfected = initial_parameters["initial_infected"]
+    infection_duration = initial_parameters["infection_duration"]
+    immune_wear = initial_parameters["immune_wear"]
+    deathchance = initial_parameters["death_chance"]
+    num_people = initial_parameters["Number_people"]
     createdvirus = virus(initialinfected, infection_diameter, [], [], [], [], virus_chance, infection_duration,
                          immune_wear, deathchance)
     return createdvirus, num_people
@@ -54,10 +56,11 @@ def createvirus():
 
 def persontrajectories():
     virus1, num_people = createvirus()
+    initial_parameters = InitialParameters()
     people = []
-    simlength = 1000
-    Boundary.x = 200
-    Boundary.y = 200
+    simlength = initial_parameters["Sim_length"]
+    Boundary.x = int(initial_parameters["Boundary"]["Rectangle"].split("x")[0])
+    Boundary.y = int(initial_parameters["Boundary"]["Rectangle"].split("x")[1])
     for j in range(num_people):
         person = Dot()
         # Initial x and y position

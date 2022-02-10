@@ -1,7 +1,6 @@
 import json
 from matplotlib import colors
 from matplotlib.animation import FuncAnimation
-import pymongo
 from pymongo import MongoClient
 from matplotlib.lines import Line2D
 from Dots_run import persontrajectories
@@ -9,8 +8,6 @@ import numpy as np
 from scipy.interpolate import make_interp_spline
 import matplotlib.pyplot as plt
 import os
-
-plt.rcParams['animation.ffmpeg_path'] = ''
 
 
 def checkinfectedneighbours(bl, tr, p):
@@ -66,12 +63,12 @@ def animation_frame(frame, graph_dots, num_people, people, infected_record, new_
     # Each time this is called frame is incremented by one
     for d in range(num_people):
         # Check if the dot is dead by seeing if the colour is on the greyscale
-        color = list(colors.to_rgb(graph_dots[d].get_color()))  # needs to be list so we can chang
+        color = list(colors.to_rgb(graph_dots[d].get_color()))
         result = color.count(color[0]) == len(color)
         if sum(color) >= 2.94:
             continue
 
-        # moves the dot to the next position on graph
+        # Moves the dot to the next position on the graph
         graph_dots[d].set_xdata(people[d].x[frame])
         graph_dots[d].set_ydata(people[d].y[frame])
 
@@ -84,11 +81,8 @@ def animation_frame(frame, graph_dots, num_people, people, infected_record, new_
     return graph_dots
 
 
-def fade_along_gray_scale():
-    return
-
-
 def change_colours_animation(frame, graph_dots, people, infected_record, new_sus, dead, d, result):
+    #
     if dead.get(people[d]):
         for change in dead.get(people[d]):
             if frame == change:
@@ -119,7 +113,8 @@ def AddToDict(personobj, dict1, infof):
     return dict1
 
 
-def writejson(num_infected, num_dead, num_recovered, t, sim_length, run_num):
+# Works better with tableau
+def writejsonold(num_infected, num_dead, num_recovered, t, sim_length, run_num):
     filename = "file.json"
     try:
         with open(filename) as f:
@@ -137,7 +132,49 @@ def writejson(num_infected, num_dead, num_recovered, t, sim_length, run_num):
         data['results'].append(json_infected)
     with open(filename, "w") as f:
         json.dump(data, f, indent=2)
-    if data["Simulation_attempts"] == (run_num+1):
+    # if data["Simulation_attempts"] == (run_num + 1):
+    # mongodbUpload(data)
+    return
+
+
+def CreateId(data):
+    # For this to work everything to be included in the ID must be placed before results in InitialConditions.json
+    ids = ""
+    for i in data:
+        if i == "results":
+            break
+        ids = ids + "_" + str(data[i])
+    ids = {"_id": ids}
+    return ids
+
+
+def writejson2(num_infected, num_dead, num_recovered, t, sim_length, run_num):
+    filename = "file.json"
+    try:
+        with open(filename) as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        with open("InitialConditions.json") as f:
+            data = json.load(f)
+            ids = CreateId(data)
+            data.update(ids)
+    else:
+        with open(filename) as f:
+            data = json.load(f)
+    for i in range(sim_length):
+        if run_num > 0:
+            data["results"][i]["Time"].append(t[i])
+            data["results"][i]["Dead"].append(num_dead[i])
+            data["results"][i]["Infected"].append(num_infected[i])
+            data["results"][i]["Recovered"].append(num_recovered[i])
+        else:
+            json_infected = {"Time": [t[i]], "Dead": [num_dead[i]], "Infected": [num_infected[i]],
+                             "Recovered": [num_recovered[i]]}
+            data["results"].append(json_infected)
+
+    with open(filename, "w") as f:
+        json.dump(data, f, indent=3)
+    if data["Simulation_attempts"] == (run_num + 1):
         mongodbUpload(data)
     return
 
@@ -146,6 +183,16 @@ def InterpolateFunc(t, num_infected):
     xnew = np.linspace(t.min(), t.max(), 150)
     power_smooth = make_interp_spline(t, num_infected)(xnew)
     return xnew, power_smooth
+
+
+def mongodbUpload(data):
+    cluster = MongoClient(f'mongodb+srv://ajm1102:{os.environ.get("ajm1102")}@cluster0.ruv0x.mongodb.net'
+                          f'/myFirstDatabase?retryWrites '
+                          '=true&w=majority')
+    db = cluster["Infection_Simulations"]
+    collection = db["Simulations"]
+    collection.insert_one(data)
+    return
 
 
 def main(run_num):
@@ -193,7 +240,7 @@ def main(run_num):
 
         count_infected, count_recovered = 0, 0
 
-    animatedots(Boundary, num_people, people, simlength, infected_record, new_sus, dead)
+    # animatedots(Boundary, num_people, people, simlength, infected_record, new_sus, dead)
 
     # plots time against num of infected people
     t = np.linspace(0, simlength - 1, simlength)
@@ -201,25 +248,19 @@ def main(run_num):
     t_inter, num_infected_inter = InterpolateFunc(t, num_infected)
     plt.figure(2)
     plt.plot(t_inter, num_infected_inter)
-    writejson(num_infected, num_dead, num_recovered, t, simlength, run_num)
+    writejson2(num_infected, num_dead, num_recovered, t, simlength, run_num)
     return
+
 
 def run():
     with open("InitialConditions.json") as f:
         data = json.load(f)
     return data["Simulation_attempts"]
 
-def mongodbUpload(data):
-    cluster = MongoClient(f'mongodb+srv://ajm1102:{os.environ.get("ajm1102")}@cluster0.ruv0x.mongodb.net'
-                          f'/myFirstDatabase?retryWrites '
-                          '=true&w=majority')
-    db = cluster["Infection_Simulations"]
-    collection = db["Simulations"]
-    collection.insert_one(data)
-    return
-
 
 if __name__ == "__main__":
-    for num in range(run()):
+    runtimes = run()
+    for num in range(runtimes):
+        found = True
         main(num)
-
+    os.remove("file.json")

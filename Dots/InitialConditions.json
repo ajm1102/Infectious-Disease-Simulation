@@ -1,10 +1,13 @@
 {
-  "Number_people": 50,
-  "infection_diameter": 20,
-  "initialinfected": 1,
-  "infection_duration": 80,
-  "immune_wear": 20,
-  "deathchance": 10,
-  "Simulation_attempts": 2,
-  "results": []
+  "Number_people": 180,
+  "infection_diameter": 10,
+  "initial_infected": 1,
+  "infection_duration": 200,
+  "immune_wear": 12,
+  "death_chance": 0,
+  "Simulation_attempts": 10,
+  "Sim_length": 1000,
+  "results": [],
+  "Boundary": {"Rectangle": "100x100"},
+  "Percent_left_infected": null
 }
