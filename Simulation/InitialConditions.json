@@ -1,11 +1,11 @@
 {
-  "Number_people": 180,
+  "Number_people": 152,
   "infection_diameter": 10,
   "initial_infected": 1,
   "infection_duration": 200,
   "immune_wear": 12,
   "death_chance": 0,
-  "Simulation_attempts": 10,
+  "Simulation_attempts": 1,
   "Sim_length": 1000,
   "results": [],
   "Boundary": {"Rectangle": "100x100"},

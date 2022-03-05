@@ -8,6 +8,7 @@ import numpy as np
 from scipy.interpolate import make_interp_spline
 import matplotlib.pyplot as plt
 import os
+import cProfile
 
 
 def checkinfectedneighbours(bl, tr, p):
@@ -207,7 +208,7 @@ def main(run_num):
     count_infected, count_dead, count_recovered = 0, 0, 0
     for i in range(simlength):
         for person in people:
-            if virus1.deathchance > np.random.randint(0, 1000, 1) and person.status == "Infected":
+            if virus1.deathchance > np.random.randint(0, 1000) and person.status == "Infected":
                 person.status = "Dead"
                 dead = AddToDict(person, dead, i)
                 count_dead = count_dead + 1
@@ -218,7 +219,7 @@ def main(run_num):
                     in_area = checkinfectedneighbours(p_susceptible.infectionAreaBL[i],
                                                       p_susceptible.infectionAreaTR[i], [person.x[i], person.y[i]])
                     if in_area:
-                        if p_susceptible.infectionChance >= np.random.randint(0, 100, 1):
+                        if p_susceptible.infectionChance >= np.random.randint(0, 100):
                             p_susceptible.status = "Infected"
                             recovertime = i + virus1.infectionduration
                             info = [i, recovertime]
@@ -229,7 +230,7 @@ def main(run_num):
                     for infection in infected_record.get(person):
                         if i == infection[1]:
                             person.status = "Recovered"
-            if person.status == "Recovered" and virus1.immune_wear >= np.random.randint(0, 10000, 1):
+            if person.status == "Recovered" and virus1.immune_wear >= np.random.randint(0, 10000):
                 person.status = "Susceptible"
                 new_sus = AddToDict(person, new_sus, i)
             if person.status == "Recovered":
@@ -240,15 +241,14 @@ def main(run_num):
 
         count_infected, count_recovered = 0, 0
 
-    # animatedots(Boundary, num_people, people, simlength, infected_record, new_sus, dead)
+    animatedots(Boundary, num_people, people, simlength, infected_record, new_sus, dead)
 
     # plots time against num of infected people
     t = np.linspace(0, simlength - 1, simlength)
     # we use an interpolation function to make the plot smooth
     t_inter, num_infected_inter = InterpolateFunc(t, num_infected)
-    plt.figure(2)
-    plt.plot(t_inter, num_infected_inter)
-    writejson2(num_infected, num_dead, num_recovered, t, simlength, run_num)
+
+    #writejson2(num_infected, num_dead, num_recovered, t, simlength, run_num)
     return
 
 
@@ -261,6 +261,5 @@ def run():
 if __name__ == "__main__":
     runtimes = run()
     for num in range(runtimes):
-        found = True
-        main(num)
+        cProfile.run(f'main({num})', sort='tottime')
     os.remove("file.json")

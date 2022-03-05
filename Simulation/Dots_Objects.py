@@ -3,10 +3,8 @@ class Dot:
         self.info = [0, 0, 0, 0]
         self.status = "Susceptible"
         self.infectionChance = 100
-        self.infectionAreaTL = []
         self.infectionAreaTR = []
         self.infectionAreaBL = []
-        self.infectionAreaBR = []
 
     @property
     def x(self):

@@ -2,7 +2,7 @@ import numpy as np
 from Dots_Objects import *
 import json
 import cProfile
-
+from numba import jit
 
 # Changes x and y coordinates and velocity direction if they outside a rectangle
 def CheckBoundaryLimits(x, y, person):
@@ -24,14 +24,11 @@ def CheckBoundaryLimits(x, y, person):
 # Calculate a rectangles coordinates around a point
 def InfectionArea(new_x, new_y, infection_diameter, person):
     AreaCoordTR = [new_x + infection_diameter, new_y + infection_diameter]
-    AreaCoordTL = [new_x + infection_diameter, new_y - infection_diameter]
-    AreaCoordBR = [new_x - infection_diameter, new_y + infection_diameter]
     AreaCoordBL = [new_x - infection_diameter, new_y - infection_diameter]
     person.infectionAreaTR.append(AreaCoordTR)
-    person.infectionAreaTL.append(AreaCoordTL)
-    person.infectionAreaBR.append(AreaCoordBR)
     person.infectionAreaBL.append(AreaCoordBL)
     return
+
 def InitialParameters():
     with open("InitialConditions.json") as f:
         initial_parameters = json.load(f)
@@ -67,7 +64,7 @@ def persontrajectories():
         person.x = np.random.randint((-1 * Boundary.x), Boundary.y, 1)
         person.y = np.random.randint((-1 * Boundary.x), Boundary.y, 1)
         # Initial x and y velocity
-        person.vx, person.vy = np.random.uniform(-2, 2, 1), np.random.uniform(-2, 2, 1)
+        person.vx, person.vy = np.random.uniform(-2, 2), np.random.uniform(-2, 2)
         for i in range(simlength):
             new_x = person.x[-1] + person.vx
             new_y = person.y[-1] + person.vy
